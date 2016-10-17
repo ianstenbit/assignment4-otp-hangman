@@ -16,16 +16,13 @@ defmodule Hangman do
              restart: :temporary
      ),
 
-      worker(Hangman.GameServer, [],
-             id: :hangmanserver,
-             restart: :temporary
-      )
+      supervisor(GameServerSupervisor, [])
 
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Hangman.Supervisor]
+    opts = [strategy: :one_for_all, name: Hangman.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end
