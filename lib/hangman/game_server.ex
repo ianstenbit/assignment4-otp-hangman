@@ -5,8 +5,8 @@ defmodule Hangman.GameServer do
   alias Hangman.Game, as: Game
   @me :gameserver
 
-  def start_link do
-    GenServer.start __MODULE__, [], name: @me
+  def start_link (word \\ Hangman.Dictionary.random_word) do
+    GenServer.start __MODULE__, word, name: @me
   end
 
   def start do
@@ -37,9 +37,13 @@ defmodule Hangman.GameServer do
     GenServer.call @me, {:word_as_string, reveal}
   end
 
+  def crash(status) do
+    GenServer.cast @me, { :crash, status}
+  end
+
   #Implementation
-  def init _args do
-    {:ok, Game.new_game}
+  def init word do
+    {:ok, Game.new_game(word)}
   end
 
   def handle_cast {:newGame, word}, _state do
@@ -65,6 +69,10 @@ defmodule Hangman.GameServer do
 
   def handle_call {:word_as_string, reveal}, _from, state do
     {:reply, Game.word_as_string(state, reveal), state}
+  end
+
+  def handle_cast {:crash, status}, state do
+    {:stop, status, state}
   end
 
 end
