@@ -5,7 +5,11 @@ defmodule Hangman.GameServer do
   alias Hangman.Game, as: Game
   @me :gameserver
 
-  def start default  \\ [] do
+  def start_link do
+    GenServer.start __MODULE__, [], name: @me
+  end
+
+  def start do
     GenServer.start __MODULE__, [], name: @me
   end
 
@@ -17,8 +21,8 @@ defmodule Hangman.GameServer do
     GenServer.call @me, {:make_move, guess}
   end
 
-  def word_length(word) do
-    GenServer.call @me, {:word_length, word}
+  def word_length do
+    GenServer.call @me, {:word_length}
   end
 
   def letters_used_so_far do
@@ -29,38 +33,38 @@ defmodule Hangman.GameServer do
     GenServer.call @me, {:turns_left}
   end
 
-  def word_as_string(state, reveal \\ false) do
-    GenServer.call @me, {:word_as_string}
+  def word_as_string(reveal \\ false) do
+    GenServer.call @me, {:word_as_string, reveal}
   end
 
   #Implementation
   def init _args do
-    Game.new_game
+    {:ok, Game.new_game}
   end
 
-  def handle_cast {:newGame, word}, state do
+  def handle_cast {:newGame, word}, _state do
     {:noreply, Game.new_game(word)}
   end
 
-  def handle_call {:make_move, guess}, state do
+  def handle_call {:make_move, guess}, _from, state do
     response = Game.make_move(state, guess)
     {:reply, elem(response, 1), elem(response, 0)}
   end
 
-  def handle_call {:word_length, word}, state do
-    {:reply, Game.word_length(word), state}
+  def handle_call {:word_length}, _from, state do
+    {:reply, Game.word_length(state), state}
   end
 
-  def handle_call {:letters}, state do
+  def handle_call {:letters}, _from, state do
     {:reply, Game.letters_used_so_far(state), state}
   end
 
-  def handle_call {:turns_left}, state do
+  def handle_call {:turns_left}, _from, state do
     {:reply, Game.turns_left(state), state}
   end
 
-  def handle_call {:word_as_string}, state do
-    {:reply, Game.word_as_String(state), state}
+  def handle_call {:word_as_string, reveal}, _from, state do
+    {:reply, Game.word_as_string(state, reveal), state}
   end
 
 end
