@@ -2,7 +2,7 @@ defmodule Hangman.GameServer do
 
   use GenServer
 
-  alias Hangman.Game as Game
+  alias Hangman.Game, as: Game
   @me :gameserver
 
   def start default  \\ [] do
@@ -18,19 +18,19 @@ defmodule Hangman.GameServer do
   end
 
   def word_length(word) do
-    GenServer.call @me {:word_length, word}
+    GenServer.call @me, {:word_length, word}
   end
 
   def letters_used_so_far do
-    GenServer.call @me {:letters}
+    GenServer.call @me, {:letters}
   end
 
   def turns_left do
-    GenServer.call @me {:turns_left}
+    GenServer.call @me, {:turns_left}
   end
 
   def word_as_string(state, reveal \\ false) do
-    GenServer.call @me {:word_as_string}
+    GenServer.call @me, {:word_as_string}
   end
 
   #Implementation
@@ -38,7 +38,7 @@ defmodule Hangman.GameServer do
     Game.new_game
   end
 
-  def handle_cast {:newGame}, state do
+  def handle_cast {:newGame, word}, state do
     {:noreply, Game.new_game(word)}
   end
 
@@ -62,5 +62,5 @@ defmodule Hangman.GameServer do
   def handle_call {:word_as_string}, state do
     {:reply, Game.word_as_String(state), state}
   end
-  
+
 end
