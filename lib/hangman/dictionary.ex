@@ -11,7 +11,9 @@ defmodule Hangman.Dictionary do
 
   @word_list_file_name "assets/words.8800"
 
-  #API
+  ##########################
+  # Begin Public Interface #
+  ##########################
   def start_link default  \\ [] do
     GenServer.start __MODULE__, default, name: @me
   end
@@ -51,17 +53,17 @@ defmodule Hangman.Dictionary do
   end
 
   def handle_call {:word}, _from, state do
-    {:reply,  word_list
-                |> Enum.random
-                |> String.trim,
+    {:reply,
+     word_list |> Enum.random
+               |> String.trim,
      state
     }
   end
 
   def handle_call {:words_of_len, len}, _from, state do
-    {:reply, word_list
-             |> Stream.map(&String.trim/1)
-             |> Enum.filter(&(String.length(&1) == len)),
+    {:reply,
+    word_list |> Stream.map(&String.trim/1)
+              |> Enum.filter(&(String.length(&1) == len)),
     state}
   end
 

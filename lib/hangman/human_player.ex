@@ -229,7 +229,3 @@ defmodule Hangman.HumanPlayer do
   end
 
 end
-
-
-
-
