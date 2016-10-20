@@ -3,17 +3,14 @@ defmodule Hangman.GameServer do
   use GenServer
 
   alias Hangman.Game, as: Game
+  alias Hangman.Dictionary, as: Dict
   @me :gameserver
 
-  def start_link (word \\ Hangman.Dictionary.random_word) do
+  def start_link(word \\ Dict.random_word) do
     GenServer.start __MODULE__, word, name: @me
   end
 
-  def start do
-    GenServer.start __MODULE__, [], name: @me
-  end
-
-  def new_game(word \\ Hangman.Dictionary.random_word) do
+  def new_game(word \\ Dict.random_word) do
     GenServer.cast @me, {:newGame, word}
   end
 
@@ -42,7 +39,7 @@ defmodule Hangman.GameServer do
   end
 
   #Implementation
-  def init word do
+  def init(word) do
     {:ok, Game.new_game(word)}
   end
 
