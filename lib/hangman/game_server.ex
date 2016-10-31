@@ -9,6 +9,8 @@ defmodule Hangman.GameServer do
   # Start of public interface #
   #############################
 
+  def start_link,       do: GenServer.start_link(__MODULE__, Hangman.new_game, name: @me)
+
   def start_link(word) do
     GenServer.start_link(__MODULE__, Hangman.new_game(word), name: @me)
   end
@@ -40,11 +42,11 @@ defmodule Hangman.GameServer do
   def init(args), do: { :ok, args }
 
   def handle_call({ :make_move, guess }, _from, state) do
-    { new_state, status, _ } = Game.make_move(state, guess)
+    { new_state, status, _ } = Hangman.make_move(state, guess)
     {:reply, status, new_state}
   end
 
-  def handle_call({ :world_length }, _from, state) do
+  def handle_call({ :word_length }, _from, state) do
     {:reply, Hangman.word_length, state}
   end
 
