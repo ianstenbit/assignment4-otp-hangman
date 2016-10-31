@@ -1,0 +1,15 @@
+mix.exs
+lib/hangman.ex
+
+____________________
+
+
+mix new --sup hangman in a temp folder in project
+
+bring in mix.exs and lib/hangman.ex
+
+
+____________________________
+
+
+Dictionary will be called from top level supervisor
