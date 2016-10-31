@@ -9,10 +9,18 @@ We'll be taking two modules, Game and Dictionary, and making servers of each.
 These modules will be part of a supervision tree. The constraints of
 this supervision are simple:
 
+# Game Supervisor
 If the Game exits normally, do nothing. If it crashes, restart it (and just it).
 
+# A crash would be an abnormal termination, so :transient restart.
+# One game shouldn't affect another game, so supervisor strategy is :one_for_one
+
+# Main Supervisor
 If the Dictionary exits for any reason, kill any game, and restart both the
 Dictionary and the Game.
+
+# Restart everything, so :permanent restart.
+# Kill all games, so supervisor strategy is :one_for_all
 
 (Hint: you'll need two supervisors.)
 
@@ -126,5 +134,3 @@ iex> Hangman.GameServer.word_as_string(g1)
 ~~~
 
 You'll need to update the tests accordingly.
-
-
